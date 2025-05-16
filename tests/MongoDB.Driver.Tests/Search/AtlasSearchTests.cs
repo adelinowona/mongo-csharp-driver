@@ -104,7 +104,7 @@ namespace MongoDB.Driver.Tests.Search
         {
             var results = GetTestCollection().Aggregate()
                 .Search(
-                    Builders.Search.Phrase(x => x.Body, "life, liberty, and the pursuit of happiness"),
+                    Builders.Search.Phrase(x => x.Body, "life, nothing, and the pursuit of happiness"),
                     count: new SearchCountOptions()
                     {
                         Type = SearchCountType.Total
