@@ -1,0 +1,5 @@
+# Run this command to always ignore formatting commits in `git blame`
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# remove extraneous white spaces
+245894e62e34de88c6bd0b72372c2d189c2ee72f
