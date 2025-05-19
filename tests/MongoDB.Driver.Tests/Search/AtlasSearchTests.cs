@@ -57,6 +57,7 @@ namespace MongoDB.Driver.Tests.Search
 
         private readonly IMongoClient _mongoClient;
 
+
         public AtlasSearchTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
         {
             RequireEnvironment.Check().EnvironmentVariable("ATLAS_SEARCH_TESTS_ENABLED");
