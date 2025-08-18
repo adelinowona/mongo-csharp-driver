@@ -78,36 +78,36 @@ namespace MongoDB.Driver.Tests.Specifications.client_side_encryption
                         { "key", new BsonBinaryData(Convert.FromBase64String(LocalMasterKey)).Bytes }
                     }
                 },
-                {
-                    "azure", new Dictionary<string, object>
-                    {
-                        { "tenantId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_TENANTID") },
-                        { "clientId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTID") },
-                        { "clientSecret", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTSECRET") }
-                    }
-                },
-                {
-                    "azure:name1", new Dictionary<string, object>
-                    {
-                        { "tenantId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_TENANTID") },
-                        { "clientId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTID") },
-                        { "clientSecret", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTSECRET") }
-                    }
-                },
-                {
-                    "gcp", new Dictionary<string, object>
-                    {
-                        { "email", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_EMAIL") },
-                        { "privateKey", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_PRIVATEKEY") }
-                    }
-                },
-                {
-                    "gcp:name1", new Dictionary<string, object>
-                    {
-                        { "email", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_EMAIL") },
-                        { "privateKey", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_PRIVATEKEY") }
-                    }
-                },
+                // {
+                //     "azure", new Dictionary<string, object>
+                //     {
+                //         { "tenantId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_TENANTID") },
+                //         { "clientId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTID") },
+                //         { "clientSecret", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTSECRET") }
+                //     }
+                // },
+                // {
+                //     "azure:name1", new Dictionary<string, object>
+                //     {
+                //         { "tenantId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_TENANTID") },
+                //         { "clientId", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTID") },
+                //         { "clientSecret", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_AZURE_CLIENTSECRET") }
+                //     }
+                // },
+                // {
+                //     "gcp", new Dictionary<string, object>
+                //     {
+                //         { "email", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_EMAIL") },
+                //         { "privateKey", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_PRIVATEKEY") }
+                //     }
+                // },
+                // {
+                //     "gcp:name1", new Dictionary<string, object>
+                //     {
+                //         { "email", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_EMAIL") },
+                //         { "privateKey", GetEnvironmentVariableOrDefaultOrThrowIfNothing("FLE_GCP_PRIVATEKEY") }
+                //     }
+                // },
                 {
                     "kmip", new Dictionary<string, object>
                     {

@@ -18,6 +18,7 @@ using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Clusters;
 using MongoDB.Driver.Core.Misc;
+using MongoDB.Driver.Encryption;
 using Xunit.Sdk;
 
 namespace MongoDB.Driver.Core.TestHelpers.XunitExtensions
@@ -283,6 +284,7 @@ namespace MongoDB.Driver.Core.TestHelpers.XunitExtensions
 
         private bool IsRequirementSatisfied(BsonElement requirement)
         {
+            BsonValue requiredValue;
             switch (requirement.Name)
             {
                 case "authEnabled":
@@ -302,7 +304,7 @@ namespace MongoDB.Driver.Core.TestHelpers.XunitExtensions
                     }
                 case "authMechanism":
                     var actualValue = CoreTestConfiguration.GetServerParameters().GetValue("authenticationMechanisms").AsBsonArray;
-                    var requiredValue = requirement.Value.AsString;
+                    requiredValue = requirement.Value.AsString;
                     return actualValue.Contains(requiredValue);
                 case "serverless":
                     var serverlessValue = requirement.Value.AsString;
@@ -328,7 +330,16 @@ namespace MongoDB.Driver.Core.TestHelpers.XunitExtensions
                     var actualClusterType = CoreTestConfiguration.Cluster.Description.Type;
                     var runOnClusterTypes = requirement.Value.AsBsonArray.Select(topology => MapTopologyToClusterType(topology.AsString)).ToList();
                     return runOnClusterTypes.Contains(actualClusterType);
-                case "csfle": return Feature.ClientSideEncryption.IsSupported(CoreTestConfiguration.MaxWireVersion);
+                case "csfle":
+                    var isCSFLESupported = Feature.ClientSideEncryption.IsSupported(CoreTestConfiguration.MaxWireVersion);
+                    requiredValue = requirement.Value;
+                    if (requiredValue.IsBsonDocument && isCSFLESupported)
+                    {
+                        var minLibmongocryptVersion = SemanticVersion.Parse(requiredValue["minLibmongocryptVersion"].AsString);
+                        var actualLibmongocryptVersion = SemanticVersion.Parse(Library.Version);
+                        return SemanticVersionCompareToAsReleased(actualLibmongocryptVersion, minLibmongocryptVersion) >= 0;
+                    }
+                    return isCSFLESupported;
                 default:
                     throw new FormatException($"Unrecognized requirement field: '{requirement.Name}'.");
             }

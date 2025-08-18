@@ -407,6 +407,7 @@ namespace MongoDB.Driver.Tests.UnifiedTestOperations
             string appName = null;
             string authMechanism = null;
             var authMechanismProperties = new Dictionary<string, object>();
+            AutoEncryptionOptions autoEncryptionOptions = null;
             var clientEventCapturers = new Dictionary<string, EventCapturer>();
             Dictionary<string, LogLevel> loggingComponents = null;
             string clientId = null;
@@ -439,6 +440,26 @@ namespace MongoDB.Driver.Tests.UnifiedTestOperations
                 {
                     case "id":
                         clientId = element.Value.AsString;
+                        break;
+                    case "autoEncryptOpts":
+                        CollectionNamespace keyVaultCollectionNamespace = null;
+                        IReadOnlyDictionary<string, IReadOnlyDictionary<string, object>> kmsProviders = null;
+
+                        foreach (var option in element.Value.AsBsonDocument)
+                        {
+                            switch (option.Name)
+                            {
+                                case "keyVaultNamespace":
+                                    keyVaultCollectionNamespace = CollectionNamespace.FromFullName(option.Value.AsString);
+                                    break;
+                                case "kmsProviders":
+                                    kmsProviders = EncryptionTestHelper.ParseKmsProviders(option.Value.AsBsonDocument);
+                                    break;
+                                default:
+                                    throw new FormatException($"Invalid client autoEncryptOpts argument name: '{option.Name}'.");
+                            }
+                        }
+                        autoEncryptionOptions = new AutoEncryptionOptions(keyVaultCollectionNamespace, kmsProviders);
                         break;
                     case "uriOptions":
                         foreach (var option in element.Value.AsBsonDocument)
@@ -660,6 +681,7 @@ namespace MongoDB.Driver.Tests.UnifiedTestOperations
                 settings =>
                 {
                     settings.ApplicationName = FailPoint.DecorateApplicationName(appName, async);
+                    settings.AutoEncryptionOptions = autoEncryptionOptions;
                     settings.ConnectTimeout = connectTimeout.GetValueOrDefault(defaultValue: settings.ConnectTimeout);
                     settings.LoadBalanced = loadBalanced.GetValueOrDefault(defaultValue: settings.LoadBalanced);
                     settings.LoggingSettings = _loggingSettings;
@@ -751,7 +773,7 @@ namespace MongoDB.Driver.Tests.UnifiedTestOperations
                                     keyExpiration = TimeSpan.FromMilliseconds(option.Value.AsInt32);
                                     break;
                                 default:
-                                    throw new FormatException($"Invalid collection option argument name: '{option.Name}'.");
+                                    throw new FormatException($"Invalid clientEncryptionOpts argument name: '{option.Name}'.");
                             }
                         }
 
@@ -764,7 +786,7 @@ namespace MongoDB.Driver.Tests.UnifiedTestOperations
                         options.SetKeyExpiration(keyExpiration);
                         break;
                     default:
-                        throw new FormatException($"Invalid {nameof(ClientEncryptionOptions)} argument name: '{element.Name}'.");
+                        throw new FormatException($"Invalid clientEncryption argument name: '{element.Name}'.");
                 }
             }
 
